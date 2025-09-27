@@ -1,0 +1,185 @@
+{% extends 'UnivendApp/base.html' %}
+{% load static %}
+
+{% block title %}Add Listing{% endblock %}
+
+{% block stylesheet %}
+    <link href="{% static 'css/add-listing.css' %}" rel="stylesheet">
+    <link href="{% static 'css/homepage-style.css' %}" rel="stylesheet">
+    
+{% endblock %}
+
+{% block top_bar %}
+    <div class="listing-header">
+        <button class="back-button" onclick="window.location.href='{% url 'home' %}'">
+            <span class="material-icons-round">arrow_back</span>
+        </button>
+        <h2>Add New Listing</h2>
+    </div>
+{% endblock %}
+
+{% block content %}
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}error-toast{% else %}success-toast{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<form id="listingForm" method="post" action="{% url 'add-listing' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="listing-container">
+        <h2>Create Your Listing</h2>
+        <p class="step-description">Fill in the details below to list your product or service.</p>
+
+        <!-- Listing Type -->
+        <div class="form-group">
+            <label>What are you listing?</label>
+            <div class="type-selection">
+                <label class="type-card" data-type="product">
+                    <input type="radio" name="listing_type" value="product" required>
+                    <div class="type-icon">
+                        <span class="material-icons-round">shopping_bag</span>
+                    </div>
+                    <h3>Product</h3>
+                    <p>Sell items like textbooks, electronics, furniture, etc.</p>
+                </label>
+                <label class="type-card" data-type="service">
+                    <input type="radio" name="listing_type" value="service" required>
+                    <div class="type-icon">
+                        <span class="material-icons-round">handyman</span>
+                    </div>
+                    <h3>Service/Skill</h3>
+                    <p>Offer services like tutoring, design, programming, etc.</p>
+                </label>
+            </div>
+            <div class="invalid-feedback">Please select a listing type</div>
+        </div>
+
+        <!-- Title -->
+        <div class="form-group">
+            <label>Title</label>
+            <input type="text" name="title" placeholder="Enter a clear, descriptive title" maxlength="100" required>
+            <span class="character-count">0/100</span>
+            <div class="invalid-feedback">Please enter a title</div>
+        </div>
+
+        <!-- Category -->
+        <div class="form-group">
+            <label>Category</label>
+            <select class="category-select" name="category" id="categorySelect" required>
+                <option value="">Select a category</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" data-type="{{ category.is_product|yesno:'product,service' }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            <div class="invalid-feedback">Please select a category</div>
+        </div>
+
+        <!-- Price -->
+        <div class="form-group">
+            <label>Price</label>
+            <div class="price-input">
+                <span class="currency">₦</span>
+                <input type="number" name="price" placeholder="0.00" step="0.01" min="0" required>
+                <div class="invalid-feedback">Please enter a valid price</div>
+                <div class="price-type">
+                    <select name="price_type" id="priceType">
+                        <option value="fixed">Fixed Price</option>
+                        <option value="negotiable">Negotiable</option>
+                        <option value="hourly">Per Hour</option>
+                        <option value="free">Free</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Condition -->
+        <div class="form-group" id="conditionGroup">
+            <label>Condition</label>
+            <select class="category-select" name="condition" id="conditionSelect">
+                <option value="">Select condition</option>
+                <option value="new">New</option>
+                <option value="like-new">Like New</option>
+                <option value="good">Good</option>
+                <option value="fair">Fair</option>
+            </select>
+            <div class="invalid-feedback">Please select a condition</div>
+        </div>
+
+        <!-- Media Upload -->
+        <div class="form-group">
+            <label>Photos</label>
+            <div class="media-upload">
+                <div class="upload-grid">
+                    <div class="upload-box main">
+                        <input type="file" name="cover_image" accept="image/*" required>
+                        <span class="material-icons-round">add_photo_alternate</span>
+                        <span>Add Cover Photo</span>
+                        <div class="invalid-feedback">Please add a cover photo</div>
+                    </div>
+                    <div class="upload-box">
+                        <input type="file" name="images" accept="image/*" multiple>
+                        <span class="material-icons-round">add</span>
+                    </div>
+                    <div class="upload-box">
+                        <input type="file" name="images" accept="image/*" multiple>
+                        <span class="material-icons-round">add</span>
+                    </div>
+                </div>
+                <p class="upload-tip">First image will be the cover photo.</p>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" placeholder="Describe your listing in detail..." rows="4" maxlength="1000" required></textarea>
+            <span class="character-count">0/1000</span>
+            <div class="invalid-feedback">Please provide a description</div>
+        </div>
+
+        <!-- Tags -->
+        <div class="form-group">
+            <label>Tags</label>
+            <input type="text" name="tags" placeholder="Add tags (comma-separated)">
+            <p class="input-tip">Add relevant tags to help people find your listing</p>
+        </div>
+
+        <!-- Location -->
+        <div class="form-group">
+            <label>Location</label>
+            <input type="text" name="location" placeholder="Enter location (e.g., campus name)" required>
+            <div class="invalid-feedback">Please enter a location</div>
+        </div>
+
+        <!-- Meeting Preferences -->
+        <div class="form-group">
+            <label>Meeting Preference</label>
+            <div class="meeting-options">
+                <label class="meeting-option">
+                    <input type="checkbox" name="meeting_preferences" value="in-person" checked>
+                    <span>In-person</span>
+                </label>
+                <label class="meeting-option">
+                    <input type="checkbox" name="meeting_preferences" value="virtual">
+                    <span>Virtual</span>
+                </label>
+            </div>
+            <div class="invalid-feedback">Please select at least one meeting preference</div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="listing-navigation">
+            <button type="submit" class="nav-button primary">Publish Listing</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/add-listing.js' %}"></script>
+{% endblock %}

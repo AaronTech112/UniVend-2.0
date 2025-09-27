@@ -1,0 +1,338 @@
+<!-- UnivendApp/templates/UnivendApp/profile.html -->
+{% extends 'UnivendApp/base.html' %}
+{% load static %}
+
+{% block title %}Profile{% endblock %}
+
+{% block stylesheet %}
+    <link href="{% static 'css/profile.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block top_bar %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="profile-header">
+        <div class="header-content">
+            <div class="user-info">
+                <div class="avatar-container">
+                    <img src="{% if request.user.profile_picture %}{{ request.user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=11{% endif %}" alt="Profile" class="profile-avatar">
+                    <button class="edit-avatar">
+                        <span class="material-icons-round">photo_camera</span>
+                    </button>
+                </div>
+                <h1>{{ request.user.first_name }} {{ request.user.last_name }}</h1>
+                <p class="user-details">{{ request.user.department.name|default:"No department" }} • {{ request.user.campus.name|default:"No campus" }}</p>
+                <div class="user-stats">
+                    <div class="stat">
+                        <span class="stat-value">{{ average_rating|floatformat:1 }}</span>
+                        <span class="stat-label">Rating</span>
+                        <span class="stat-icon">⭐</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat">
+                        <span class="stat-value">{{ request.user.sales.count }}</span>
+                        <span class="stat-label">Sales</span>
+                        <span class="stat-icon">📦</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat">
+                        <span class="stat-value">{{ request.user.purchases.count }}</span>
+                        <span class="stat-label">Purchases</span>
+                        <span class="stat-icon">🛍️</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <a href="{% url 'edit_profile' %}" style="text-decoration:none;" class="action-button">
+            <span class="material-icons-round">edit</span>
+            Edit Profile
+        </a>
+        <a href="{% url 'settings' %}" style="text-decoration:none;" class="action-button">
+            <span class="material-icons-round">settings</span>
+            Settings
+        </a>
+    </div>
+    
+    <div class="profile-tabs">
+        <button class="tab-button active" data-tab="listings">
+            <span class="material-icons-round">grid_view</span>
+            Listings
+        </button>
+        <button class="tab-button" data-tab="reviews">
+            <span class="material-icons-round">star</span>
+            Reviews
+        </button>
+        <button class="tab-button" data-tab="transactions">
+            <span class="material-icons-round">receipt_long</span>
+            History
+        </button>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="listings">
+            <div class="section-header">
+                <h2>Active Listings</h2>
+                <button class="add-listing-button" onclick="window.location.href='{% url 'add-listing' %}'">
+                    <span class="material-icons-round">add</span>
+                    New Listing
+                </button>
+            </div>
+            <div class="listings-grid">
+                {% for listing in active_listings %}
+                    <div class="listing-card">
+                        <div class="listing-image">
+                            <img src="{% if listing.images.first.image %}{{ listing.images.first.image.url }}{% else %}https://via.placeholder.com/150{% endif %}" alt="{{ listing.title }}">
+                            <span class="listing-badge">Active</span>
+                            <button class="edit-listing" data-listing-id="{{ listing.id }}">
+                                <span class="material-icons-round">more_vert</span>
+                            </button>
+                        </div>
+                        <div class="listing-content">
+                            <h3>{{ listing.title }}</h3>
+                            <p class="price">₦{{ listing.price }}</p>
+                            <div class="listing-stats">
+                                <span>
+                                    <span class="material-icons-round">visibility</span> {{ listing.views }} views
+                                </span>
+                                <span>
+                                    <span class="material-icons-round">favorite</span> {{ listing.saves.count }} saves
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No active listings.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-pane" id="reviews">
+            <div class="reviews-list">
+                {% for review in request.user.received_reviews.all %}
+                    <div class="review-card">
+                        <img src="{% if review.reviewer.profile_picture %}{{ review.reviewer.profile_picture.url }}{% else %}https://i.pravatar.cc/150{% endif %}" alt="{{ review.reviewer.first_name }}" class="reviewer-avatar">
+                        <div class="review-content">
+                            <div class="review-header">
+                                <div>
+                                    <h3>{{ review.reviewer.first_name }} {{ review.reviewer.last_name }}</h3>
+                                    <div class="rating">
+                                        {% for i in '12345'|make_list %}
+                                            {% if forloop.counter <= review.rating %}⭐{% else %}☆{% endif %}
+                                        {% endfor %}
+                                        <span class="review-date">{{ review.created_at|date:"M d, Y" }}</span>
+                                    </div>
+                                </div>
+                                <span class="transaction-tag">
+                                    {% if review.listing %}
+                                        {% with transaction=review.listing.transaction_set.first %}
+                                            {% if transaction %}
+                                                {% if review.reviewer == transaction.buyer %}
+                                                    Buyer
+                                                {% elif review.reviewer == transaction.seller %}
+                                                    Seller
+                                                {% else %}
+                                                    Unknown
+                                                {% endif %}
+                                            {% else %}
+                                                Unknown
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% else %}
+                                        Unknown
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <p class="review-text">{{ review.comment|default:"No comment" }}</p>
+                            {% if review.listing %}
+                                <div class="review-product">
+                                    <img src="{% if review.listing.images.first.image %}{{ review.listing.images.first.image.url }}{% else %}https://via.placeholder.com/50{% endif %}" alt="{{ review.listing.title }}">
+                                    <span>{{ review.listing.title }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No reviews yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tab-pane" id="transactions">
+            <div class="transactions-list">
+                {% for transaction in request.user.sales.all %}
+                    <div class="transaction-card">
+                        <div class="transaction-icon sold">
+                            <span class="material-icons-round">sell</span>
+                        </div>
+                        <div class="transaction-content">
+                            <div class="transaction-header">
+                                <h3>{{ transaction.listing.title|default:"Deleted Listing" }}</h3>
+                                <span class="transaction-amount">+₦{{ transaction.amount }}</span>
+                            </div>
+                            <p class="transaction-details">
+                                Sold to {{ transaction.buyer.first_name }} {{ transaction.buyer.last_name }}
+                                <span class="transaction-date">{{ transaction.created_at|date:"M d, Y" }}</span>
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% for transaction in request.user.purchases.all %}
+                    <div class="transaction-card">
+                        <div class="transaction-icon bought">
+                            <span class="material-icons-round">shopping_bag</span>
+                        </div>
+                        <div class="transaction-content">
+                            <div class="transaction-header">
+                                <h3>{{ transaction.listing.title|default:"Deleted Listing" }}</h3>
+                                <span class="transaction-amount">-₦{{ transaction.amount }}</span>
+                            </div>
+                            <p class="transaction-details">
+                                Bought from {{ transaction.seller.first_name }} {{ transaction.seller.last_name }}
+                                <span class="transaction-date">{{ transaction.created_at|date:"M d, Y" }}</span>
+                            </p>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No transactions yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="settingsModalLabel">Settings</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-list">
+                        <div class="settings-item">
+                            <span class="material-icons-round">notifications</span>
+                            <span>Notifications</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-item">
+                            <span class="material-icons-round">dark_mode</span>
+                            <span>Dark Mode</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-item">
+                            <span class="material-icons-round">security</span>
+                            <span>Privacy</span>
+                            <span class="material-icons-round">chevron_right</span>
+                        </div>
+                        <div class="settings-item">
+                            <span class="material-icons-round">help</span>
+                            <span>Help & Support</span>
+                            <span class="material-icons-round">chevron_right</span>
+                        </div>
+                        <div class="settings-item danger">
+                            <a href="{% url 'logout' %}">
+                                <span class="material-icons-round">logout</span>
+                                <span>Log Out</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="editProfileModalLabel">Edit Profile</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="edit-profile-form" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="profile-picture-edit">
+                            <div class="avatar-preview">
+                                <img src="{% if request.user.profile_picture %}{{ request.user.profile_picture.url }}{% else %}https://i.pravatar.cc/300{% endif %}" alt="Profile" id="avatarPreview">
+                                <button type="button" class="change-avatar">
+                                    <span class="material-icons-round">photo_camera</span>
+                                    Change Photo
+                                </button>
+                                {{ form.profile_picture }}
+                            </div>
+                        </div>
+                        <div class="form-section">
+                            <h3>Personal Information</h3>
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                {{ form.full_name }}
+                            </div>
+                            <div class="form-group">
+                                <label>Username</label>
+                                {{ form.username }}
+                            </div>
+                            <div class="form-group">
+                                <label>Bio</label>
+                                {{ form.bio }}
+                            </div>
+                        </div>
+                        <div class="form-section">
+                            <h3>Academic Details</h3>
+                            <div class="form-group">
+                                <label>Department</label>
+                                {{ form.department }}
+                            </div>
+                            <div class="form-group">
+                                <label>Campus Location</label>
+                                {{ form.campus }}
+                            </div>
+                        </div>
+                        <div class="form-section">
+                            <h3>Contact Information</h3>
+                            <div class="form-group">
+                                <label>Email</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                {{ form.phone_number }}
+                            </div>
+                        </div>
+                        <div class="form-section">
+                            <h3>Preferences</h3>
+                            <div class="preference-toggle">
+                                <span>Show phone number to others</span>
+                                {{ form.show_phone }}
+                            </div>
+                            <div class="preference-toggle">
+                                <span>Email notifications</span>
+                                {{ form.email_notifications }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary save-profile">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/profile.js' %}"></script>
+{% endblock %}

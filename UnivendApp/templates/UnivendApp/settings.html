@@ -1,0 +1,160 @@
+<!-- UnivendApp/templates/UnivendApp/settings.html -->
+{% extends 'UnivendApp/base.html' %}
+{% load static %}
+
+{% block title %}Settings{% endblock %}
+
+{% block stylesheet %}
+    <link href="{% static 'css/profile.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block top_bar %}
+
+{% endblock %}
+
+
+{% block content %}
+    <style>
+        /* UnivendApp/static/UnivendApp/css/profile.css */
+        .settings-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .settings-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .settings-body {
+            padding: 1rem 0;
+        }
+
+        .settings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .settings-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+        }
+
+        .settings-item span.material-icons-round {
+            margin-right: 0.5rem;
+        }
+
+        .settings-item.danger a {
+            color: #dc3545;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #28a745;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+    </style>
+    <div class="settings-container">
+        <div class="settings-header">
+            <h2>Settings</h2>
+            <a href="{% url 'profile' %}" class="btn btn-secondary">Back to Profile</a>
+        </div>
+        <div class="settings-body">
+            <div class="settings-list">
+                <div class="settings-item">
+                    <span class="material-icons-round">notifications</span>
+                    <span>Notifications</span>
+                    <label class="switch">
+                        <input type="checkbox" id="notificationsToggle" {% if request.user.email_notifications %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="settings-item">
+                    <span class="material-icons-round">dark_mode</span>
+                    <span>Dark Mode</span>
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="settings-item">
+                    <span class="material-icons-round">security</span>
+                    <span>Privacy</span>
+                    <span class="material-icons-round">chevron_right</span>
+                </div>
+                <div class="settings-item">
+                    <span class="material-icons-round">help</span>
+                    <span>Help & Support</span>
+                    <span class="material-icons-round">chevron_right</span>
+                </div>
+                <div class="settings-item danger">
+                    <a href="{% url 'logout' %}">
+                        <span class="material-icons-round">logout</span>
+                        <span>Log Out</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/settings.js' %}"></script>
+{% endblock %}

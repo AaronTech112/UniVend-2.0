@@ -1,0 +1,70 @@
+{% extends 'UnivendApp/base.html' %}
+{% load static %}
+
+{% block title %}Messages{% endblock %}
+
+{% block stylesheet %}
+    <link href="{% static 'css/chat.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block top_bar %}
+    <div class="top-bar">
+        <h1>Messages</h1>
+        <div class="top-actions">
+            <button class="action-button">
+                <span class="material-icons-round">search</span>
+            </button>
+            <button class="action-button">
+                <span class="material-icons-round">more_vert</span>
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="chat-filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="unread">Unread</button>
+        <button class="filter-btn" data-filter="active-orders">Active Orders</button>
+    </div>
+
+    <div class="chat-list">
+        {% for chat in chats %}
+            <div class="chat-item{% if chat.unread_count > 0 %} unread{% endif %}{% if chat.listing %} active-order{% endif %}" data-chat-id="{{ chat.id }}">
+                <div class="chat-avatar">
+                    <img src="{% if chat.other_user.profile_picture %}{{ chat.other_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150{% endif %}" alt="{{ chat.other_user.first_name }}">
+                    <span class="status-dot {{ chat.other_user.is_online|yesno:'online,' }}"></span>
+                </div>
+                <div class="chat-content">
+                    <div class="chat-header">
+                        <h3>{{ chat.other_user.first_name }} {{ chat.other_user.last_name }}</h3>
+                        <span class="chat-time">{{ chat.last_message.sent_at|timesince }} ago</span>
+                    </div>
+                    <div class="chat-preview">
+                        {% if chat.last_message.image %}
+                            <span class="material-icons-round">image</span>
+                            <p>Sent a photo</p>
+                        {% else %}
+                            <p>{{ chat.last_message.content|truncatechars:50 }}</p>
+                        {% endif %}
+                    </div>
+                    {% if chat.listing %}
+                        <div class="order-info">
+                            <span class="material-icons-round">shopping_bag</span>
+                            <span>{{ chat.listing.title }} • ${{ chat.listing.price }}</span>
+                        </div>
+                    {% endif %}
+                    {% if chat.unread_count > 0 %}
+                        <div class="unread-badge">{{ chat.unread_count }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <p>No messages yet.</p>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/chat-list.js' %}"></script>
+{% endblock %}

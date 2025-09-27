@@ -1,0 +1,100 @@
+{% extends 'UnivendApp/base.html' %}
+{% load static %}
+
+{% block title %}Explore{% endblock %}
+
+{% block stylesheet %}
+    <link href="{% static 'css/explore-style.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block top_bar %}
+    <div class="top-bar">
+        <div class="back-button" onclick="history.back()">
+            <span class="material-icons-round">arrow_back</span>
+        </div>
+        <h1>Explore</h1>
+        <div class="filter-button">
+            <span class="material-icons-round">tune</span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <!-- Search Section -->
+    <div class="search-section">
+        <div class="search-bar">
+            <span class="material-icons-round">search</span>
+            <input type="text" placeholder="Search categories...">
+        </div>
+    </div>
+
+    <!-- Categories Grid -->
+    <div class="categories-container">
+        <div class="categories-grid">
+            <!-- Products Categories -->
+            <h2>Products</h2>
+            <div class="category-card" data-category="books">
+                <span class="material-icons-round">book</span>
+                <h3>Books</h3>
+                <p>Textbooks, Notes & Study Materials</p>
+            </div>
+            <div class="category-card" data-category="electronics">
+                <span class="material-icons-round">devices</span>
+                <h3>Electronics</h3>
+                <p>Laptops, Phones & Gadgets</p>
+            </div>
+            <div class="category-card" data-category="fashion">
+                <span class="material-icons-round">checkroom</span>
+                <h3>Fashion</h3>
+                <p>Clothing, Shoes & Accessories</p>
+            </div>
+            <div class="category-card" data-category="furniture">
+                <span class="material-icons-round">chair</span>
+                <h3>Furniture</h3>
+                <p>Dorm & Study Furniture</p>
+            </div>
+
+            <!-- Services Categories -->
+            <h2>Services</h2>
+            <div class="category-card" data-category="tutoring">
+                <span class="material-icons-round">school</span>
+                <h3>Tutoring</h3>
+                <p>Academic Help & Study Groups</p>
+            </div>
+            <div class="category-card" data-category="tech-services">
+                <span class="material-icons-round">computer</span>
+                <h3>Tech Services</h3>
+                <p>Repairs, Development & IT Support</p>
+            </div>
+            <div class="category-card" data-category="events">
+                <span class="material-icons-round">celebration</span>
+                <h3>Events</h3>
+                <p>Photography & Event Planning</p>
+            </div>
+            <div class="category-card" data-category="food">
+                <span class="material-icons-round">restaurant</span>
+                <h3>Food</h3>
+                <p>Meal Prep & Catering</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Items Section (Initially Hidden) -->
+    <div class="category-items-section" style="display: none;">
+        <div class="category-header">
+            <h2 id="selected-category-title">Category Title</h2>
+            <button class="back-to-categories">
+                <span class="material-icons-round">close</span>
+            </button>
+        </div>
+        <div class="items-grid" id="category-items">
+            <!-- Items will be dynamically added here -->
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<!-- In add-listing.html -->
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&libraries=places"></script>
+    <script src="{% static 'js/explore.js' %}"></script>
+{% endblock %}

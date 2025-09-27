@@ -1,0 +1,106 @@
+{% extends 'UnivendApp/base.html' %}
+{% load static %}
+
+{% block stylesheet %}
+    <link href="{% static 'css/homepage-style.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <!-- Search Section -->
+    <div class="search-section">
+        <div class="search-bar">
+            <span class="material-icons-round">search</span>
+            <input type="text" placeholder="Search products or services...">
+        </div>
+    </div>
+    <!-- Categories Grid -->
+    <div class="categories-scroll">
+        <div class="category active">
+            <span class="material-icons-round">grid_view</span> All
+        </div>
+        <div class="category">
+            <span class="material-icons-round">book</span> Books
+        </div>
+        <div class="category">
+            <span class="material-icons-round">devices</span> Electronics
+        </div>
+        <div class="category">
+            <span class="material-icons-round">design_services</span> Services
+        </div>
+        <div class="category">
+            <span class="material-icons-round">checkroom</span> Fashion
+        </div>
+    </div>
+
+    <!-- Featured Section -->
+    <div class="featured-section">
+        <h2>Featured 🔥</h2>
+        <div class="featured-scroll">
+            {% for listing in featured_listings %}
+                <div class="featured-card">
+                    <a href="{% url 'product-detail' listing_id=listing.id %}" style="text-decoration: none;">
+                        <img src="{% if listing.images.first.image %}{{ listing.images.first.image.url }}{% else %}https://via.placeholder.com/300{% endif %}" alt="{{ listing.title }}">
+                        <div class="featured-content">
+                            <h3>{{ listing.title }}</h3>
+                            <p>{{ listing.description|truncatechars:50 }}</p>
+                            <span class="price">
+                                {% if listing.price_type == 'free' %}
+                                    Free
+                                {% elif listing.price_type == 'hourly' %}
+                                    ₦{{ listing.price }}/hr
+                                {% else %}
+                                    ₦{{ listing.price }}
+                                {% endif %}
+                            </span>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <p>No featured listings available.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Recent Listings -->
+    <div class="listings-section">
+        <h2>Recent Listings</h2>
+        <div class="listings-grid">
+            {% for listing in recent_listings %}
+                <div class="listing-card">
+                    <div class="listing-image">
+                        <a href="{% url 'product-detail' listing_id=listing.id %}">
+                            <img src="{% if listing.images.first.image %}{{ listing.images.first.image.url }}{% else %}https://via.placeholder.com/150{% endif %}" alt="{{ listing.title }}">
+                            {% if listing.created_at|timesince < "3 days" %}
+                                <span class="listing-badge" style="text-transform: uppercase;">new</span>
+                            {% elif listing.saves.count > 10 %}
+                                <span class="listing-badge" style="text-transform: uppercase;">popular</span>
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div class="listing-content">
+                        <h3>{{ listing.title }}</h3>
+                        <p>{{ listing.description|truncatechars:50 }}</p>
+                        <div class="listing-footer">
+                            <span class="price">
+                                {% if listing.price_type == 'free' %}
+                                    Free
+                                {% elif listing.price_type == 'hourly' %}
+                                    ₦{{ listing.price }}/hr
+                                {% else %}
+                                    ₦{{ listing.price }}
+                                {% endif %}
+                            </span>
+                            <span class="location">{{ listing.location }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No recent listings available.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'UnivendApp/js/home.js' %}"></script>
+{% endblock %}

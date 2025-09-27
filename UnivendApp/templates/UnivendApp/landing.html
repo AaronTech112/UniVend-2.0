@@ -1,0 +1,459 @@
+<!-- landing.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniVend - Your Campus Marketplace</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4F46E5;
+            --secondary-color: #818CF8;
+            --secondary-color2: #06B6D4;
+            --accent-color: #06B6D4;
+            --background-color: #F3F4F6;
+            --text-color: #1F2937;
+            --gradient-1: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+            --gradient-2: linear-gradient(45deg, rgba(79, 70, 229, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .hero-section {
+            background: var(--gradient-1);
+            color: white;
+            padding: 6rem 0;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+        }
+
+        .hero-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(255,255,255,0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255,255,255,0.1) 0%, transparent 20%);
+            opacity: 0.6;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            background: linear-gradient(to right, #fff, #E0E7FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #fff, #E0E7FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .cta-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            color: white;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            background: var(--gradient-2);
+            width: 80px;
+            height: 80px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .feature-icon .material-icons-round {
+            font-size: 32px;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-section {
+            background: var(--gradient-2);
+            padding: 5rem 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-image {
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.2));
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+                background-size: cover;
+                background-position: center;
+                position: relative;
+            }
+
+            .hero-section::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: var(--gradient-1);
+                opacity: 0.85;
+            }
+
+            .hero-content {
+                position: relative;
+                z-index: 2;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-image {
+                display: none;
+            }
+        }
+        .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .logo-symbol {
+        width: 40px;
+        height: 40px;
+        position: relative;
+        border-radius: 12px;
+        transform: rotate(45deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    /* Initial state (white) */
+    .logo-symbol {
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    }
+
+    .logo-symbol::before {
+        content: '';
+        position: absolute;
+        width: 70%;
+        height: 70%;
+        border: 3px solid var(--primary-color);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .logo-symbol::after {
+        content: 'UV';
+        transform: rotate(-45deg);
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 18px;
+        font-family: 'Space Grotesk', sans-serif;
+        letter-spacing: -1px;
+        transition: all 0.3s ease;
+    }
+
+    .logo-text {
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        font-size: 1.8rem;
+        transition: all 0.3s ease;
+    }
+
+    /* Initial state text gradient (white) */
+    .logo-text {
+        background: linear-gradient(to right, #ffffff, #e0e7ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Scrolled state */
+    .navbar.scrolled .logo-symbol {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color2) 100%);
+    }
+
+    .navbar.scrolled .logo-symbol::before {
+        border-color: white;
+    }
+
+    .navbar.scrolled .logo-symbol::after {
+        color: white;
+    }
+
+    /* Scrolled state text gradient (colored) */
+    .navbar.scrolled .logo-text {
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: none;
+    }
+
+    /* Hover effects */
+    .logo-symbol:hover {
+        transform: rotate(225deg);
+    }
+
+    @media (max-width: 768px) {
+        .logo-symbol {
+            width: 32px;
+            height: 32px;
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* Navbar modifications */
+    .navbar {
+        transition: all 0.3s ease;
+        padding: 1rem 0;
+    }
+
+    .navbar.scrolled {
+        background: white !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .navbar.scrolled .cta-button {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    /* Initial state button */
+    .cta-button {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .cta-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Scrolled state button */
+    .navbar.scrolled .cta-button {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color2) 100%);
+        border: none;
+        color: white;
+    }
+
+    .navbar.scrolled .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+    }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand logo-container" href="#">
+                <div class="logo-symbol"></div>
+                <div class="logo-text">UniVend</div>
+            </a>
+            <div class="d-flex">
+                <a href="{% url 'login' %}" class="cta-button me-2">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-pattern"></div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content">
+                    <h1 class="hero-title">Transform Your Campus Experience</h1>
+                    <p class="hero-subtitle">Connect, trade, and thrive in your campus community. Buy and sell everything from textbooks to tech, or offer your skills and services.</p>
+                    <a href="index.html" class="cta-button">Join Your Campus Market →</a>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                         alt="Campus Marketplace" 
+                         class="hero-image img-fluid">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-number">10K+</div>
+                        <div class="stat-label">Active Students</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Partner Universities</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-number">1000+</div>
+                        <div class="stat-label">Daily Exchanges</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-icons-round">security</span>
+                        </div>
+                        <h3>Secure Trading</h3>
+                        <p>Verified student accounts and secure transaction system.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-icons-round">school</span>
+                        </div>
+                        <h3>Campus Focus</h3>
+                        <p>Exclusively for your campus community.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-icons-round">diversity_3</span>
+                        </div>
+                        <h3>Community Driven</h3>
+                        <p>Connect with fellow students and build networks.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4 text-center">
+        <div class="container">
+            <p>© 2025 UniVend. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > window.innerHeight * 0.1) { // Change color after 10% of viewport height
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+{% extends 'UnivendApp/base.html' %}
+{% load static %}
+
+
+
+{% block stylesheet %}
+    <link href="{% static 'css/chat-detail.css' %}" rel="stylesheet">
+    <link href="{% static 'css/homepage-style.css' %}" rel="stylesheet">       
+{% endblock %}
+
+{% block top_bar %}
+    <div class="chat-header">
+        <div class="header-left">
+            <button class="back-button" onclick="window.location.href='{% url 'chat-list' %}'">
+                <span class="material-icons-round">arrow_back</span>
+            </button>
+            <div class="user-info">
+                <img src="{% if chat_user.profile_picture %}{{ chat_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=1{% endif %}" alt="{{ chat_user.first_name }}" class="user-avatar">
+                <div class="user-details">
+                    <h2>{{ chat_user.first_name }} {{ chat_user.last_name }}</h2>
+                    <span class="status">{{ chat_user.is_online|yesno:"Online,Offline" }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="action-button">
+                <span class="material-icons-round">call</span>
+            </button>
+            <button class="action-button">
+                <span class="material-icons-round">more_vert</span>
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% if listing %}
+        <div class="order-card">
+            <img src="{% if listing.images.first.image %}{{ listing.images.first.image.url }}{% else %}https://via.placeholder.com/150{% endif %}" alt="{{ listing.title }}" class="order-image">
+            <div class="order-details">
+                <h3>{{ listing.title }}</h3>
+                <p class="price">${{ listing.price }}</p>
+            </div>
+            <button class="view-button" onclick="window.location.href='{% url 'product-detail' listing.id %}'">
+                <span class="material-icons-round">chevron_right</span>
+            </button>
+        </div>
+    {% endif %}
+
+    <div class="chat-messages" id="chatMessages">
+        <!-- Time Divider -->
+        <div class="time-divider">Today</div>
+
+        <!-- Received Message -->
+        <div class="message-wrapper received">
+            <img src="https://i.pravatar.cc/150?img=1" alt="Sarah" class="message-avatar">
+            <div class="message">
+                <p>Hi! I'm interested in your MacBook Pro. Is it still available?</p>
+                <span class="message-time">10:30 AM</span>
+            </div>
+        </div>
+
+        <!-- Sent Message -->
+        <div class="message-wrapper sent">
+            <div class="message">
+                <p>Yes, it's still available! Would you like to see it in person?</p>
+                <span class="message-time">10:31 AM</span>
+                <span class="message-status">
+                    <span class="material-icons-round">done_all</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Received Image Message -->
+        <div class="message-wrapper received">
+            <img src="https://i.pravatar.cc/150?img=1" alt="Sarah" class="message-avatar">
+            <div class="message">
+                <div class="image-message">
+                    <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8" alt="MacBook Detail">
+                </div>
+                <p>Could you show me more pictures of the ports?</p>
+                <span class="message-time">10:35 AM</span>
+            </div>
+        </div>
+
+        <!-- Sent Image Message -->
+        <div class="message-wrapper sent">
+            <div class="message">
+                <div class="image-message">
+                    <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef" alt="MacBook Ports">
+                </div>
+                <p>Here you go! It has 3 Thunderbolt ports and an HDMI port.</p>
+                <span class="message-time">10:36 AM</span>
+                <span class="message-status">
+                    <span class="material-icons-round">done_all</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Typing Indicator -->
+        <div class="message-wrapper received typing">
+            <img src="https://i.pravatar.cc/150?img=1" alt="Sarah" class="message-avatar">
+            <div class="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="chat-input">
+        <form id="messageForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="input-wrapper">
+                <button type="button" class="attachment-button">
+                    <span class="material-icons-round">add</span>
+                </button>
+                <input type="text" name="content" placeholder="Message..." id="messageInput">
+                <input type="file" name="image" accept="image/*" hidden id="messageImage">
+                <button type="button" class="emoji-button">
+                    <span class="material-icons-round">sentiment_satisfied_alt</span>
+                </button>
+            </div>
+            <button type="submit" class="send-button" disabled>
+                <span class="material-icons-round">send</span>
+            </button>
+        </form>
+    </div>
+
+    <div class="attachment-menu" id="attachmentMenu">
+        <div class="attachment-option">
+            <div class="attachment-icon" style="background: #4CAF50;">
+                <span class="material-icons-round">image</span>
+            </div>
+            <span>Gallery</span>
+        </div>
+        <div class="attachment-option">
+            <div class="attachment-icon" style="background: #2196F3;">
+                <span class="material-icons-round">camera_alt</span>
+            </div>
+            <span>Camera</span>
+        </div>
+        <div class="attachment-option">
+            <div class="attachment-icon" style="background: #9C27B0;">
+                <span class="material-icons-round">description</span>
+            </div>
+            <span>Document</span>
+        </div>
+        <div class="attachment-option">
+            <div class="attachment-icon" style="background: #FF9800;">
+                <span class="material-icons-round">location_on</span>
+            </div>
+            <span>Location</span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/chat-detail.js' %}"></script>
+{% endblock %}

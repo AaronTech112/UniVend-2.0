@@ -1,0 +1,150 @@
+{% extends 'UnivendApp/base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block stylesheet %}
+    <link href="{% static 'css/profile.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block top_bar %}
+
+{% endblock %}
+
+{% block content %}
+    <style>
+        /* Edit Profile Page */
+        .edit-profile-container {
+            padding: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+        }
+
+        .edit-profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .edit-profile-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .back-button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--background-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background: #E5E7EB;
+        }
+    </style>
+
+    <div class="edit-profile-container">
+        <div class="edit-profile-header">
+            <h2>Edit Profile</h2>
+            <a href="{% url 'profile' %}" class="back-button">
+                <span class="material-icons-round">arrow_back</span>
+            </a>
+        </div>
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li>{{ field }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <form class="edit-profile-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="profile-picture-edit">
+                <div class="avatar-preview">
+                    <img src="{% if request.user.profile_picture %}{{ request.user.profile_picture.url }}{% else %}https://i.pravatar.cc/300{% endif %}" alt="Profile" id="avatarPreview">
+                    <button type="button" class="change-avatar">
+                        <span class="material-icons-round">photo_camera</span>
+                        Change Photo
+                    </button>
+                    {{ form.profile_picture }}
+                </div>
+            </div>
+            <div class="form-section">
+                <h3>Personal Information</h3>
+                <div class="form-group">
+                    <label for="{{ form.full_name.id_for_label }}">Full Name</label>
+                    {{ form.full_name }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.bio.id_for_label }}">Bio</label>
+                    {{ form.bio }}
+                </div>
+            </div>
+            <div class="form-section">
+                <h3>Academic Details</h3>
+                <div class="form-group">
+                    <label for="{{ form.department.id_for_label }}">Department</label>
+                    {{ form.department }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.campus.id_for_label }}">Campus Location</label>
+                    {{ form.campus }}
+                </div>
+            </div>
+            <div class="form-section">
+                <h3>Contact Information</h3>
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">Email</label>
+                    {{ form.email }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.phone_number.id_for_label }}">Phone Number</label>
+                    {{ form.phone_number }}
+                </div>
+            </div>
+            <div class="form-section">
+                <h3>Preferences</h3>
+                <div class="preference-toggle">
+                    <span>Show phone number to others</span>
+                    {{ form.show_phone }}
+                </div>
+                <div class="preference-toggle">
+                    <span>Email notifications</span>
+                    {{ form.email_notifications }}
+                </div>
+            </div>
+            <div class="save-button-container">
+                <button type="submit" class="save-profile">Save Changes</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/profile.js' %}"></script>
+{% endblock %}

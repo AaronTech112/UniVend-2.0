@@ -128,7 +128,7 @@ def logout_view(request):
     messages.info(request, "Logged out successfully!")
     return redirect('landing_page')  # Redirect to your home page
 
-@login_required
+@login_required(login_url='login_user')
 def kyc(request):
     if request.user.is_verified:
         return redirect('home')

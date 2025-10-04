@@ -21,7 +21,7 @@
             </div>
 
             <!-- Login Form -->
-            <form id="" class="auth-form active" method="post" action="{% url 'login' %}">
+            <form id="" class="auth-form active" method="post" action="{% url 'login_user' %}">
                 {% csrf_token %}
                 <h2 class="auth-title">Welcome Back!</h2>
                 {% if messages %}

@@ -8,10 +8,10 @@
 {% block content %}
     <!-- Search Section -->
     <div class="search-section">
-        <div class="search-bar">
+        <form class="search-bar" action="{% url 'search' %}" method="get">
             <span class="material-icons-round">search</span>
-            <input type="text" placeholder="Search products or services...">
-        </div>
+            <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Search products or services...">
+        </form>
     </div>
     <!-- Categories Grid -->
     <div class="categories-scroll">
@@ -31,6 +31,49 @@
             <span class="material-icons-round">checkroom</span> Fashion
         </div>
     </div>
+
+    {% if query %}
+    <!-- Search Results -->
+    <div class="listings-section">
+        <h2>Search Results for "{{ query }}"</h2>
+        {% if listings %}
+        <div class="listings-grid">
+            {% for listing in listings %}
+                <div class="listing-card">
+                    <div class="listing-image">
+                        <a href="{% url 'product-detail' listing_id=listing.id %}">
+                            <img src="{% if listing.images.first.image %}{{ listing.images.first.image.url }}{% else %}https://via.placeholder.com/150{% endif %}" alt="{{ listing.title }}">
+                            {% if listing.created_at|timesince < "3 days" %}
+                                <span class="listing-badge" style="text-transform: uppercase;">new</span>
+                            {% elif listing.saves.count > 10 %}
+                                <span class="listing-badge" style="text-transform: uppercase;">popular</span>
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div class="listing-content">
+                        <h3>{{ listing.title }}</h3>
+                        <p>{{ listing.description|truncatechars:50 }}</p>
+                        <div class="listing-footer">
+                            <span class="price">
+                                {% if listing.price_type == 'free' %}
+                                    Free
+                                {% elif listing.price_type == 'hourly' %}
+                                    ₦{{ listing.price }}/hr
+                                {% else %}
+                                    ₦{{ listing.price }}
+                                {% endif %}
+                            </span>
+                            <span class="location">{{ listing.location }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p>No results found.</p>
+        {% endif %}
+    </div>
+    {% else %}
 
     <!-- Featured Section -->
     <div class="featured-section">
@@ -99,6 +142,8 @@
             {% endfor %}
         </div>
     </div>
+    {% endif %}
+    
 {% endblock %}
 
 {% block scripts %}

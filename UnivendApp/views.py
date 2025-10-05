@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .models import CustomUser, Campus, Department, Category, Listing, ListingImage, Message, Review, Transaction
-from .forms import ListingForm, KYCForm, ProfileForm, MessageForm
+from .forms import ListingForm, KYCForm, ProfileForm, MessageForm, RegistrationForm
 from django.db.models import Q, Avg, Count
 import json
 from datetime import datetime
@@ -50,57 +50,27 @@ def home(request):
 
         
 def register_user(request):
-    campuses = Campus.objects.all()
-    departments = Department.objects.all()
+    if request.user.is_authenticated:
+        return redirect('home')
+
     if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        username = request.POST.get('username')
-        phone_number = request.POST.get('phone_number')
-        email = request.POST.get('email')
-        campus = request.POST.get('campus')
-        department = request.POST.get('department')
-        password1 = request.POST.get('password1')
-        password2 = request.POST.get('password2')
-        
-
-        # Validate inputs (add more validation as needed)
-        if not first_name or not last_name or not email or not password1 or not campus:
-            messages.error(request, 'Please fill in all fields.')
-            return render(request, 'UnivendApp/register.html', {'campuses': campuses})
-
-        try:
-            campus = Campus.objects.get(name=campus)
-            department = Department.objects.get(name=department)
-        except Campus.objects.get(name=campus).DoesNotExist:
-            print(campus)
-            messages.error(request, 'Invalid campus selected.')
-            context = {"campuses":campuses, "departments":departments }
-            return render(request, 'UnivendApp/register.html', context)
-
-        # Create the user
-        try:
-            user = CustomUser.objects.create_user(
-                username=username,
-                first_name=first_name,
-                last_name=last_name,
-                email=email,
-                phone_number=phone_number,
-                campus=campus,
-                department=department,
-                password=password1,
-                 
-            )
-            login(request, user)
-            messages.success(request, 'Registration successful!')
-            return redirect('home')  # Redirect to your home page
-        except Exception as e:
-            messages.error(request, f'Registration failed: {e}')
-            context = {"campuses":campuses, "departments":departments }
-            return render(request, 'UnivendApp/register.html', context)
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            try:
+                user = form.save()
+                login(request, user)
+                messages.success(request, 'Registration successful!')
+                return redirect('home')
+            except Exception as e:
+                messages.error(request, f'Registration failed: {e}')
+        else:
+            messages.error(request, 'Please correct the errors below.')
     else:
-        context = {"campuses":campuses, "departments": departments }
-        return render(request, 'UnivendApp/register.html',context)
+        form = RegistrationForm()
+
+    return render(request, 'UnivendApp/register.html', {
+        'form': form,
+    })
     
     
 def login_user(request):

@@ -1,91 +1,110 @@
 {% load static %}
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniVend - Campus Marketplace</title>
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <style>
+        .form-floating > label { left: auto; }
+    </style>
 </head>
-
 <body>
     <div class="auth-container">
         <div class="auth-box">
             <div class="logo-container">
                 <img src="{% static 'img/logo.jpg' %}" alt="UniVend Logo" class="auth-logo">
             </div>
-            <!-- Signup Form -->
-            <form id="" class="auth-form active" method="POST" action="">
+            <form class="auth-form active" method="POST" action="">
                 {% csrf_token %}
                 <h2 class="auth-title">Create Account</h2>
-                {% if messages %}
-                    <div class="messages">
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            <div>{{ error }}</div>
                         {% endfor %}
                     </div>
                 {% endif %}
+
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="signupName" name="first_name" placeholder="Full Name">
-                    <label for="signupName">First Name</label>
+                    {{ form.first_name }}
+                    <label for="signupFirstName">First Name</label>
+                    {% if form.first_name.errors %}
+                        <div class="invalid-feedback d-block">{{ form.first_name.errors|striptags }}</div>
+                    {% endif %}
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="signupName" name="last_name" placeholder="Full Name">
-                    <label for="signupName">Last Name</label>
+                    {{ form.last_name }}
+                    <label for="signupLastName">Last Name</label>
+                    {% if form.last_name.errors %}
+                        <div class="invalid-feedback d-block">{{ form.last_name.errors|striptags }}</div>
+                    {% endif %}
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="signupName" name="username" placehousernamelder="Full Name">
-                    <label for="signupName">User name</label>
+                    {{ form.username }}
+                    <label for="signupUsername">User name</label>
+                    {% if form.username.errors %}
+                        <div class="invalid-feedback d-block">{{ form.username.errors|striptags }}</div>
+                    {% endif %}
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="signupEmail" name="email" placeholder="name@example.com">
+                    {{ form.email }}
                     <label for="signupEmail">Email address</label>
+                    {% if form.email.errors %}
+                        <div class="invalid-feedback d-block">{{ form.email.errors|striptags }}</div>
+                    {% endif %}
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="tel" class="form-control" id="signupphone" name="phone_number" placeholder="name@example.com">
+                    {{ form.phone_number }}
                     <label for="signupphone">Phone number</label>
+                    {% if form.phone_number.errors %}
+                        <div class="invalid-feedback d-block">{{ form.phone_number.errors|striptags }}</div>
+                    {% endif %}
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="signupPassword" name="password1" placeholder="Password">
+                    {{ form.password1 }}
                     <label for="signupPassword">Password</label>
+                    {% if form.password1.errors %}
+                        <div class="invalid-feedback d-block">{{ form.password1.errors|striptags }}</div>
+                    {% endif %}
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="signupPassword" name="password2" placeholder="Password">
-                    <label for="signupPassword">Confirm Password</label>
+                    {{ form.password2 }}
+                    <label for="signupPasswordConfirm">Confirm Password</label>
+                    {% if form.password2.errors %}
+                        <div class="invalid-feedback d-block">{{ form.password2.errors|striptags }}</div>
+                    {% endif %}
                 </div>
                 <div class="form-floating mb-3">
-                    <select class="form-select" id="DepartmentSelect" name="department">
-                        <option selected disabled>Select your Department</option>
-                        {% for department in departments %}
-                            <option value="{{ department.name }}">{{ department.name }}</option>
-                        {% endfor %}
-                    </select>
+                    {{ form.department }}
+                    <label for="DepartmentSelect">Department</label>
+                    {% if form.department.errors %}
+                        <div class="invalid-feedback d-block">{{ form.department.errors|striptags }}</div>
+                    {% endif %}
                 </div>
                 <div class="form-floating mb-3">
-                    <select class="form-select" id="campusSelect" name="campus">
-                        <option selected disabled>Select your campus</option>
-                        {% for campus in campuses %}
-                            <option name="campus" value="{{ campus.name }}">{{ campus.name }}</option>
-                        {% endfor %}
-                    </select>
+                    {{ form.campus }}
+                    <label for="campusSelect">Campus</label>
+                    {% if form.campus.errors %}
+                        <div class="invalid-feedback d-block">{{ form.campus.errors|striptags }}</div>
+                    {% endif %}
                 </div>
+
                 <button type="submit" class="btn btn-primary w-100 btn-lg">Sign Up</button>
                 <p class="mt-3 text-center">
-                    Already have an account? <a href="{% url 'login_user' %}" >Log in</a>
+                    Already have an account? <a href="{% url 'login_user' %}">Log in</a>
                 </p>
             </form>
         </div>
     </div>
 
-    <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src=""></script>
 </body>
-
 </html>

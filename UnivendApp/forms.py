@@ -114,3 +114,83 @@ class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
         fields = ['content', 'image']
+
+
+class RegistrationForm(forms.ModelForm):
+    password1 = forms.CharField(
+        label='Password',
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'id': 'signupPassword', 'placeholder': 'Password'})
+    )
+    password2 = forms.CharField(
+        label='Confirm Password',
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'id': 'signupPasswordConfirm', 'placeholder': 'Confirm Password'})
+    )
+
+    campus = forms.ModelChoiceField(
+        queryset=Campus.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-select', 'id': 'campusSelect'})
+    )
+    department = forms.ModelChoiceField(
+        queryset=Department.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-select', 'id': 'DepartmentSelect'})
+    )
+
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'username', 'email', 'phone_number', 'campus', 'department']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'id': 'signupFirstName', 'placeholder': 'First Name'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'id': 'signupLastName', 'placeholder': 'Last Name'}),
+            'username': forms.TextInput(attrs={'class': 'form-control', 'id': 'signupUsername', 'placeholder': 'User name'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'id': 'signupEmail', 'placeholder': 'name@example.com'}),
+            'phone_number': forms.TextInput(attrs={'class': 'form-control', 'id': 'signupphone', 'placeholder': 'Phone number'}),
+        }
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if CustomUser.objects.filter(username=username).exists():
+            raise forms.ValidationError('This username is already taken.')
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if CustomUser.objects.filter(email=email).exists():
+            raise forms.ValidationError('An account with this email already exists.')
+        return email
+
+    def clean_phone_number(self):
+        phone = self.cleaned_data.get('phone_number')
+        if phone:
+            if CustomUser.objects.filter(phone_number=phone).exists():
+                raise forms.ValidationError('This phone number is already in use.')
+        return phone
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+        campus = cleaned_data.get('campus')
+        department = cleaned_data.get('department')
+
+        if password1 and password2 and password1 != password2:
+            self.add_error('password2', 'Passwords do not match.')
+
+        if campus and department and department.campus_id != campus.id:
+            self.add_error('department', 'Selected department does not belong to the chosen campus.')
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        user = CustomUser.objects.create_user(
+            username=self.cleaned_data['username'],
+            email=self.cleaned_data['email'],
+            password=self.cleaned_data['password1'],
+            first_name=self.cleaned_data['first_name'],
+            last_name=self.cleaned_data['last_name'],
+            phone_number=self.cleaned_data.get('phone_number'),
+            campus=self.cleaned_data['campus'],
+            department=self.cleaned_data['department'],
+        )
+        return user
